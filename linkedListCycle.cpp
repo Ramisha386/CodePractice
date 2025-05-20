@@ -11,35 +11,34 @@ struct ListNode {
 class Solution {
 public:
     bool hasCycle(ListNode *head) {
-        if (head == nullptr) return false;
-        int n = 100000000;
-        while (n >= 0) {
-            if (head->next == nullptr) {
-                return false;
-            }
-            head = head->next;
-            n--;
+        if (head == NULL) return false;
+        ListNode* fast = head;
+        ListNode* slow = head;
+
+        while (fast->next && fast->next->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+            if (slow == fast) return true;
         }
-        return true;
+        return false;
     }
 };
 
 int main() {
-    // Create list: 3 -> 2 -> 0 -> -4
+    // Create nodes
     ListNode* node1 = new ListNode(3);
     ListNode* node2 = new ListNode(2);
     ListNode* node3 = new ListNode(0);
     ListNode* node4 = new ListNode(-4);
 
+    // Link nodes
     node1->next = node2;
     node2->next = node3;
     node3->next = node4;
+    node4->next = node2; // Creates a cycle (tail connects to node2)
 
-    // Create cycle: tail connects to node2
-    node4->next = node2;
-
-    Solution sol;
-    bool result = sol.hasCycle(node1);
+    Solution solution;
+    bool result = solution.hasCycle(node1);
 
     if (result) {
         cout << "Cycle detected in the linked list." << endl;
@@ -47,7 +46,8 @@ int main() {
         cout << "No cycle in the linked list." << endl;
     }
 
-    // Note: In real code, you should free memory. Avoiding it here due to the cycle.
+    // NOTE: In a real-world program, free memory carefully if no cycle exists
+    // and handle cycles cautiously to avoid infinite loops during cleanup.
 
     return 0;
 }
